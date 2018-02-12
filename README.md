@@ -56,7 +56,13 @@ To deploy the Bind9 instance, you just have to run the Ansible playbook bind9.ym
 ansible-playbook bind9.yml
 ```
 
-If all run like it is expected, you should connect to the Vagrant instance and run collectd command : ============================================== > TODO
+If all run like it is expected, you should connect to the Vagrant instance and ping www.wikitops.io or any local domain name configured in bind database file.
+
+If ping does not work, be sure that the DNS server on host use the local address :
+
+```
+sudo echo "nameserver 127.0.0.1" > /etc/resolv.conf
+```
 
 #### Destroy
 
