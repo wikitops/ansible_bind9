@@ -1,0 +1,44 @@
+# {{ ansible_managed }}
+
+# Default Options
+include "/etc/bind/named.conf.options";
+
+# Include zone files
+zone "wikitops.io" IN {
+    type master;
+    file "/etc/bind/db.fra.prd";
+    notify yes;
+};
+
+zone "stg.wikitops.io" IN {
+    type master;
+    file "/etc/bind/db.fra.stg";
+    notify yes;
+};
+
+zone "dev.wikitops.io" IN {
+    type master;
+    file "/etc/bind/db.fra.dev";
+    notify yes;
+};
+
+zone "0.10.IN-ADDR.ARPA" IN {
+    type master;
+    file "/etc/bind/db.10.0.0.0-16";
+    notify yes;
+};
+
+zone "10.10.IN-ADDR.ARPA" IN {
+    type master;
+    file "/etc/bind/db.10.10.0.0-16";
+    notify yes;
+};
+
+zone "20.10.IN-ADDR.ARPA" IN {
+    type master;
+    file "/etc/bind/db.10.20.0.0-16";
+    notify yes;
+};
+
+# Include locals settings
+include "/etc/bind/named.conf.local";

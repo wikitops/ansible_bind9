@@ -1,0 +1,32 @@
+# {{ ansible_managed }}
+
+include "/etc/bind/rndc.key";
+controls {
+        inet 127.0.0.1 port 953 allow { 127.0.0.1/32; ::1/128; } keys { "rndc-key"; };
+};
+
+statistics-channels {
+  inet 127.0.0.1 port 8053;
+};
+
+logging {
+    channel warning_log {
+        file "/var/log/named/warnings.log" versions 7 size 100M;
+        severity warning;
+        print-category yes;
+        print-severity yes;
+        print-time yes;
+    };
+    channel query_log {
+        file "/var/log/named/query.log" versions 7 size 100M;
+        severity debug 3;
+        print-category yes;
+        print-severity yes;
+        print-time yes;
+    };
+    category default { warning_log; } ;
+    category queries { query_log; };
+    category lame-servers { null; };
+    category security { null; };
+    category unmatched { null; };
+};

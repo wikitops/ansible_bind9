@@ -1,0 +1,74 @@
+---
+
+- name: Install Bind9
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - bind9
+    - bind9utils
+
+- name: Create Bind9 directory
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: bind
+    group: bind
+    mode: 0755
+  with_items:
+    - /var/log/named
+    - /var/bind
+
+- name: Configure the master server
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: root
+    group: root
+    mode: 0644
+  when: inventory_hostname in groups['master']
+  with_items:
+    - { src: "etc/bind/named.conf.master.j2", dest: "/etc/bind/named.conf"}
+    - { src: "etc/bind/named.conf.local.j2", dest: "/etc/bind/named.conf.local"}
+    - { src: "etc/bind/named.conf.options.j2", dest: "/etc/bind/named.conf.options"}
+  notify:
+    - Restart bind
+  tags:
+    - config
+
+- name: Deploy DNS zone files on the master
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: root
+    group: root
+    mode: 0644
+  when: inventory_hostname in groups['master']
+  with_items:
+    - { src: "etc/bind/db.fra.prd.j2", dest: "/etc/bind/db.fra.prd"}
+    - { src: "etc/bind/db.fra.stg.j2", dest: "/etc/bind/db.fra.stg"}
+    - { src: "etc/bind/db.fra.dev.j2", dest: "/etc/bind/db.fra.dev"}
+    - { src: "etc/bind/db.10.0.0.0-16.j2", dest: "/etc/bind/db.10.0.0.0-16"}
+    - { src: "etc/bind/db.10.10.0.0-16.j2", dest: "/etc/bind/db.10.10.0.0-16"}
+    - { src: "etc/bind/db.10.20.0.0-16.j2", dest: "/etc/bind/db.10.20.0.0-16"}
+  notify:
+    - Reload bind
+  tags:
+    - config
+
+- name: Configure the slave server
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: root
+    group: root
+    mode: 0644
+  when: inventory_hostname in groups['slave']
+  with_items:
+    - { src: "etc/bind/named.conf.slave.j2", dest: "/etc/bind/named.conf"}
+    - { src: "etc/bind/named.conf.local.j2", dest: "/etc/bind/named.conf.local"}
+    - { src: "etc/bind/named.conf.options.j2", dest: "/etc/bind/named.conf.options"}
+  notify:
+    - Restart bind
+  tags:
+    - config

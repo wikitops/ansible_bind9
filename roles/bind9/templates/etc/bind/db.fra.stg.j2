@@ -1,0 +1,19 @@
+$ttl 38400
+@                       IN      SOA     @ admin.wikitops.io. (
+                                              2018021201
+                                              10800
+                                              3600
+                                              1209600
+                                              38400
+)
+
+@                       IN      NS      dns01.wikitops.io.
+@                       IN      NS      dns02.wikitops.io.
+
+gateway                 IN      A       10.10.0.1
+                        IN      A       10.10.0.2
+
+haproxy                 IN      A       10.10.0.21
+                        IN      A       10.10.0.22
+
+www                     IN      A       10.10.1.11

@@ -1,0 +1,26 @@
+$TTL 1d ; 172800 secs
+$ORIGIN 0.10.IN-ADDR.ARPA.
+@       IN      SOA   @ admin.wikitops.io. (
+                              2018011201 ; serial number
+                              12h        ; refresh
+                              15m        ; update retry
+                              3w         ; expiry
+                              3h         ; minimum
+                              )
+
+@       IN      NS      dns01.wikitops.io.
+@       IN      NS      dns02.wikitops.io.
+
+0.1     IN      PTR     gateway01.wikitops.io.
+0.2     IN      PTR     gateway02.wikitops.io.
+
+0.11    IN      PTR     dns01.wikitops.io.
+0.12    IN      PTR     dns02.wikitops.io.
+
+0.21    IN      PTR     haproxy01.wikitops.io.
+0.22    IN      PTR     haproxy02.wikitops.io.
+
+1.11    IN      PTR     nginx01.wikitops.io.
+
+2.11    IN      PTR     postgresql01.wikitops.io.
+2.12    IN      PTR     postgresql02.wikitops.io.
