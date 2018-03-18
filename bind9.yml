@@ -5,3 +5,4 @@
   become: yes
   roles:
     - bind9
+    - common

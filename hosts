@@ -3,3 +3,7 @@
 
 [slave]
 10.0.0.12
+
+[bind_cluster:children]
+master
+slave

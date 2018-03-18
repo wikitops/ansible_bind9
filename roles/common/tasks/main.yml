@@ -1,0 +1,9 @@
+---
+
+- name: COMMON | Configure resolv.conf
+  template:
+    src: "etc/resolv.conf.j2"
+    dest: "/etc/resolv.conf"
+    owner: root
+    group: root
+    mode: 0644

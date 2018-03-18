@@ -6,19 +6,19 @@ include "/etc/bind/named.conf.options";
 # Include zone files
 zone "wikitops.io" IN {
     type master;
-    file "/etc/bind/db.fra.prd";
+    file "/etc/bind/db.wikitops.prd";
     notify yes;
 };
 
 zone "stg.wikitops.io" IN {
     type master;
-    file "/etc/bind/db.fra.stg";
+    file "/etc/bind/db.wikitops.stg";
     notify yes;
 };
 
 zone "dev.wikitops.io" IN {
     type master;
-    file "/etc/bind/db.fra.dev";
+    file "/etc/bind/db.wikitops.dev";
     notify yes;
 };
 

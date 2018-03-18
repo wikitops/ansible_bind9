@@ -1,6 +1,6 @@
 ---
 
-- name: Install Bind9
+- name: BIND9 | Installation
   apt:
     name: "{{ item }}"
     state: present
@@ -8,18 +8,18 @@
     - bind9
     - bind9utils
 
-- name: Create Bind9 directory
+- name: BIND9 | Create directories
   file:
-    path: "{{ item }}"
+    path: "{{ item.path }}"
     state: directory
-    owner: bind
-    group: bind
-    mode: 0755
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
   with_items:
-    - /var/log/named
-    - /var/bind
+    - { path: "/var/log/named", owner: "bind", group: "bind", mode: "0755" }
+    - { path: "/etc/bind/zones", owner: "root", group: "bind", mode: "0775" }
 
-- name: Configure the master server
+- name: BIND9 | Configure master server
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
@@ -31,32 +31,10 @@
     - { src: "etc/bind/named.conf.master.j2", dest: "/etc/bind/named.conf"}
     - { src: "etc/bind/named.conf.local.j2", dest: "/etc/bind/named.conf.local"}
     - { src: "etc/bind/named.conf.options.j2", dest: "/etc/bind/named.conf.options"}
-  notify:
-    - Restart bind
-  tags:
-    - config
+  notify: Restart bind
+  tags: config
 
-- name: Deploy DNS zone files on the master
-  template:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    owner: root
-    group: root
-    mode: 0644
-  when: inventory_hostname in groups['master']
-  with_items:
-    - { src: "etc/bind/db.fra.prd.j2", dest: "/etc/bind/db.fra.prd"}
-    - { src: "etc/bind/db.fra.stg.j2", dest: "/etc/bind/db.fra.stg"}
-    - { src: "etc/bind/db.fra.dev.j2", dest: "/etc/bind/db.fra.dev"}
-    - { src: "etc/bind/db.10.0.0.0-16.j2", dest: "/etc/bind/db.10.0.0.0-16"}
-    - { src: "etc/bind/db.10.10.0.0-16.j2", dest: "/etc/bind/db.10.10.0.0-16"}
-    - { src: "etc/bind/db.10.20.0.0-16.j2", dest: "/etc/bind/db.10.20.0.0-16"}
-  notify:
-    - Reload bind
-  tags:
-    - config
-
-- name: Configure the slave server
+- name: BIND9 | Configure the slave server
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
@@ -68,7 +46,23 @@
     - { src: "etc/bind/named.conf.slave.j2", dest: "/etc/bind/named.conf"}
     - { src: "etc/bind/named.conf.local.j2", dest: "/etc/bind/named.conf.local"}
     - { src: "etc/bind/named.conf.options.j2", dest: "/etc/bind/named.conf.options"}
-  notify:
-    - Restart bind
-  tags:
-    - config
+  notify: Restart bind
+  tags: config
+
+- name: BIND9 | Deploy DNS zone files on the master
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: root
+    group: root
+    mode: 0644
+  when: inventory_hostname in groups['master']
+  with_items:
+    - { src: "etc/bind/zones/db.wikitops.prd.j2", dest: "/etc/bind/db.wikitops.prd"}
+    - { src: "etc/bind/zones/db.wikitops.stg.j2", dest: "/etc/bind/db.wikitops.stg"}
+    - { src: "etc/bind/zones/db.wikitops.dev.j2", dest: "/etc/bind/db.wikitops.dev"}
+    - { src: "etc/bind/zones/db.10.0.0.0-16.j2", dest: "/etc/bind/db.10.0.0.0-16"}
+    - { src: "etc/bind/zones/db.10.10.0.0-16.j2", dest: "/etc/bind/db.10.10.0.0-16"}
+    - { src: "etc/bind/zones/db.10.20.0.0-16.j2", dest: "/etc/bind/db.10.20.0.0-16"}
+  notify: Reload bind
+  tags: config

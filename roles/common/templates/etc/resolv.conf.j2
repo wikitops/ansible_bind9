@@ -1,0 +1,4 @@
+# {{ ansible_managed }}
+{% for host in groups['bind_cluster'] %}
+nameserver {{ host }}
+{% endfor %}
