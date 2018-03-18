@@ -61,7 +61,7 @@ If all run like it is expected, you should connect to the Vagrant instance and p
 If ping does not work, be sure that the DNS server on host use the local address :
 
 ```
-sudo echo "nameserver 127.0.0.1" > /etc/resolv.conf
+sudo echo "nameserver 10.0.0.11" > /etc/resolv.conf
 ```
 
 #### Destroy
