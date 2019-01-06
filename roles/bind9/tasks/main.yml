@@ -1,12 +1,11 @@
 ---
 
 - name: BIND9 | Installation
-  apt:
-    name: "{{ item }}"
+  package:
+    name:
+      - bind9
+      - bind9utils
     state: present
-  with_items:
-    - bind9
-    - bind9utils
 
 - name: BIND9 | Create directories
   file:
@@ -26,7 +25,7 @@
     owner: root
     group: root
     mode: 0644
-  when: inventory_hostname in groups['master']
+  when: inventory_hostname in groups['bind_master']
   with_items:
     - { src: "etc/bind/named.conf.master.j2", dest: "/etc/bind/named.conf"}
     - { src: "etc/bind/named.conf.local.j2", dest: "/etc/bind/named.conf.local"}
@@ -34,14 +33,14 @@
   notify: Restart bind
   tags: config
 
-- name: BIND9 | Configure the slave server
+- name: BIND9 | Configure slave server
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
     owner: root
     group: root
     mode: 0644
-  when: inventory_hostname in groups['slave']
+  when: inventory_hostname in groups['bind_slave']
   with_items:
     - { src: "etc/bind/named.conf.slave.j2", dest: "/etc/bind/named.conf"}
     - { src: "etc/bind/named.conf.local.j2", dest: "/etc/bind/named.conf.local"}
@@ -56,7 +55,7 @@
     owner: root
     group: root
     mode: 0644
-  when: inventory_hostname in groups['master']
+  when: inventory_hostname in groups['bind_master']
   with_items:
     - { src: "etc/bind/zones/db.wikitops.prd.j2", dest: "/etc/bind/db.wikitops.prd"}
     - { src: "etc/bind/zones/db.wikitops.stg.j2", dest: "/etc/bind/db.wikitops.stg"}

@@ -7,42 +7,42 @@ include "/etc/bind/named.conf.options";
 zone "wikitops.io" IN {
     type slave;
     file "/var/cache/bind/db.wikitops.prd";
-    masters { {{ groups['master'][0] }}; };
+    masters { {{ groups['bind_master'][0] }}; };
     notify yes;
 };
 
 zone "stg.wikitops.io" IN {
     type slave;
     file "/var/cache/bind/db.wikitops.stg";
-    masters { {{ groups['master'][0] }}; };
+    masters { {{ groups['bind_master'][0] }}; };
     notify yes;
 };
 
 zone "dev.wikitops.io" IN {
     type slave;
     file "/var/cache/bind/db.wikitops.dev";
-    masters { {{ groups['master'][0] }}; };
+    masters { {{ groups['bind_master'][0] }}; };
     notify yes;
 };
 
 zone "0.10.IN-ADDR.ARPA" IN {
     type slave;
     file "/var/cache/bind/db.10.0.0.0-16";
-    masters { {{ groups['master'][0] }}; };
+    masters { {{ groups['bind_master'][0] }}; };
     notify yes;
 };
 
 zone "10.10.IN-ADDR.ARPA" IN {
     type slave;
     file "/var/cache/bind/db.10.10.0.0-16";
-    masters { {{ groups['master'][0] }}; };
+    masters { {{ groups['bind_master'][0] }}; };
     notify yes;
 };
 
 zone "20.10.IN-ADDR.ARPA" IN {
     type slave;
     file "/var/cache/bind/db.10.20.0.0-16";
-    masters { {{ groups['master'][0] }}; };
+    masters { {{ groups['bind_master'][0] }}; };
     notify yes;
 };
 
