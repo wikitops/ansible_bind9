@@ -1,6 +1,6 @@
 # Ansible : Playbook Bind9
 
-The aim of this project is to deploy a Bind9 luster on Linux Vagrant instances.
+The aim of this project is to deploy a Bind9 cluster on Linux Vagrant instances.
 
 ## Getting Started
 
@@ -36,6 +36,7 @@ $ vagrant status
 Current machine states:
 
 bind01                   running (virtualbox)
+bind02                   running (virtualbox)
 ```
 
 If everything run has expected, you should have a cluster up and running.

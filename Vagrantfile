@@ -1,34 +1,6 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-Vagrant.configure("2") do |config|
-
-  config.vm.box = "ubuntu/xenial64"
-
-  # Bind9
-  (1..2).each do |i|
-    config.vm.provider "virtualbox" do |vb|
-      vb.memory = 2048
-      vb.cpus = 1
-    end
-
-    config.vm.define "bind0#{i}" do |server|
-      server.vm.hostname = "bind0#{i}"
-      server.vm.network "private_network", ip: "10.0.0.1#{i}"
-    end
-  end
-
-  # Provision
-  config.vm.provision "shell", path: "provision.sh"
-  config.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "/home/vagrant/.ssh/authorized_keys"
-
-end
-
-
-
-# -*- mode: ruby -*-
-# vi: set ft=ruby :
-
 # List of supported operating systems
 SUPPORTED_OS = {
   "debian"   => {box: "debian/stretch64", bootstrap_os: "debian", user: "vagrant"},
@@ -81,7 +53,7 @@ Vagrant.configure("2") do |config|
     end
 
     config.vm.define vm_name = "%s%02d" % [$instance_name_prefix, i] do |server|
-      config.vm.hostname = vm_name
+      server.vm.hostname = vm_name
       server.vm.network "private_network", ip: "#{$subnet}#{i}"
 
       host_vars[vm_name] = {
@@ -89,12 +61,12 @@ Vagrant.configure("2") do |config|
       }
 
       # Provision
-      config.vm.provision "shell", path: "provision.sh"
-      # config.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "/home/vagrant/.ssh/authorized_keys"
+      server.vm.provision "shell", path: "provision.sh"
+      # server.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "/home/vagrant/.ssh/authorized_keys"
 
       # Only execute the Ansible provisioner when all the machines are up and ready
       if i == $num_instances
-        config.vm.provision "ansible" do |ansible|
+        server.vm.provision "ansible" do |ansible|
           ansible.compatibility_mode  = "2.0"
           ansible.playbook            = $playbook
           if File.exist?(File.join(File.dirname($inventory), "hosts"))
@@ -107,7 +79,7 @@ Vagrant.configure("2") do |config|
           ansible.groups = {
             "bind" => ["#{$instance_name_prefix}0[1:#{$num_instances}]"],
             "bind_master" => ["#{$instance_name_prefix}01"],
-            "bind_slave" => ["#{$instance_name_prefix}0[2:#{$num_instances}]"]
+            "bind_slave" => ["#{$instance_name_prefix}02"]
           }
         end
       end
